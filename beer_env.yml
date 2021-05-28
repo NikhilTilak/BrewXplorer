@@ -1,0 +1,23 @@
+name: beer
+
+dependencies:
+  - python=3.7
+  - numpy
+  - scipy
+  - scikit-learn
+  - pandas
+  - xlrd
+  - openpyxl
+  - matplotlib
+  - seaborn
+  - jupyter
+  - geopandas
+  - descartes
+  - urllib3 
+  - bs4
+  - pip
+  - pip:
+    - plotly
+    - jupyter-dash
+    - gunicorn
+    
