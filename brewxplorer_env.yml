@@ -1,0 +1,18 @@
+name: brewxplorer
+
+dependencies:
+  - python=3.7
+  - numpy
+  - scipy
+  - pandas
+  - xlrd
+  - openpyxl
+  - pip
+  - pip:
+    - dash
+    - dash-renderer
+    - dash-core-components
+    - dash-html-components
+    - plotly
+    - gunicorn
+    

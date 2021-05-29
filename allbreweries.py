@@ -22,6 +22,8 @@ BBS_DIR = os.path.join(DATA_DIR,'breweriesByState')
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
+app.title = "brewxplorer"
 
 allBreweries = pd.read_excel(os.path.join(BBS_DIR,'cleaned.xlsx'))
 
@@ -182,10 +184,11 @@ def update_plot(selected_state, selected_city):
     data = df[df.columns[0:3]].sort_values(by=['breweryState']).to_dict('records')
     
     num = df.shape[0]
+
     if num>1:
-        common_text = 'There are ' + str(num) + ' breweries in '
+        common_text = 'We found ' + str(num) + ' breweries in '
     else:
-        common_text = 'There is ' + str(num) + ' brewery in '
+        common_text = 'We found ' + str(num) + ' brewery in '
         
     summary_text = common_text + variable_text
 
