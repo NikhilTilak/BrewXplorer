@@ -7,6 +7,9 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+from dash_html_components.Br import Br
+from dash_html_components.Div import Div
+from dash_html_components.Table import Table
 import dash_table
 
 import plotly.express as px
@@ -23,91 +26,86 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
-app.title = "brewxplorer"
+app.title = "BrewXplorer"
 
 allBreweries = pd.read_excel(os.path.join(BBS_DIR,'cleaned.xlsx'))
 
-allBreweries.dropna(inplace=True)
+allBreweries.dropna(inplace=True) #removing all the rows with missing data
 
-counts_dict = allBreweries['breweryCity'].value_counts().to_dict()
+counts_dict = allBreweries['breweryCity'].value_counts().to_dict() # This dict stores the number of breweries in a city
 
-allBreweries['breweryCounts'] = allBreweries.apply(lambda x: counts_dict[x.breweryCity], axis=1)
+allBreweries['breweryCounts'] = allBreweries.apply(lambda x: counts_dict[x.breweryCity], axis=1) #adding a column for brewery counts using above dict
 
 list_of_states = list(allBreweries['breweryState'].unique())
 list_of_states.sort()
-list_of_states = ['all'] + list_of_states
+list_of_states = ['all'] + list_of_states #creating the drop down list for states where they are listed alphabetically
 
 
-app.layout = html.Div(
-    children=[
-    html.H1('Breweries in the United States',
-            style={'text-align': 'center'
-                  }
+
+app.layout = html.Div([
+
+    html.H1('Explore Breweries in the United States',
+            style={'text-align': 'center'}
            ),
-        
-    html.Div(
-        children=[
-            html.H6('Select a State'),
-            dcc.Dropdown(
-                id='state-selector',
-                options=[{'label': i, 'value': i} for i in list_of_states],
-                value='all'
-                )]
-        ,
-        style={'width': '48%', 'float': 'left'}
-    ),
-        
-    html.Div(
-        children=[
-            html.H6('Search a brewery'),
-            dcc.Dropdown(
-                id='brewery-finder',
-                options=[{'label': i, 'value': i} for i in allBreweries['breweryName'].unique()],
-                )
-        ],
-        style={'width': '48%', 'float': 'right'}
-    ),
-        
-    html.Div(
-        children=[
-            html.H6('Select a City'),
-            dcc.Dropdown(
-                id='city-selector',
-                value='all'
-                )],
-        style={'width': '48%', 'float': 'bottom'}
-    ),
-    
-    html.Div(
-        children=[
-            html.H6(
-                    id='brewery-location',
-                    children='')
-        ],
-        style={'width': '48%', 'float': 'right'}
-    ),
-    
-    html.Br(),
-        
-    html.Div(
-        dcc.Graph(id='US_breweries-graph'),
-        style={'width': '48%', 'float': 'left'}
-    ),
-        
-    html.Div(
-    dash_table.DataTable(id='table',
+
+
+
+    html.Div([
+        html.Div([
+                                html.H6('Select a State'),
+                                dcc.Dropdown(
+                                    id='state-selector',
+                                    options=[{'label': i, 'value': i} for i in list_of_states],
+                                    value='all'
+                                    )],
+                                    
+                ),
+
+        html.Div([
+                                    html.H6('Select a City'),
+                                    dcc.Dropdown(
+                                        id='city-selector',
+                                        value='all'
+                                        )],
+                                    
+                ),
+
+        html.Div([
+                                    dcc.Graph(id='US_breweries-graph')
+                ])
+              ], style={'width':'48%', 'display' : 'inline-block'}),
+
+
+
+html.Div([
+     html.Div([
+                                html.H6('Search a brewery'),
+                                dcc.Dropdown(
+                                            id='brewery-finder',
+                                            options=[{'label': i, 'value': i} for i in allBreweries['breweryName'].unique()],
+                                            value='Kona Brewing Company'
+                                            )
+              ]),
+
+    html.Div([
+                                        html.H6('Brewery location'),
+                                        html.H6(id='brewery-location')
+                                                                 
+            ]),
+
+    html.Div([
+                         dash_table.DataTable(id='table',
                          columns=[{"name": i, "id": i} for i in allBreweries.columns[0:3]],
-                        page_size=10
-                        ), 
-    
-    style={'width': '48%', 'float': 'right'}),
-    
-    html.Div(
-        children=html.H4(
-            id='summary-data',
-            children='There are x breweries in the united states'),
-        style={'width': '48%', 'float': 'bottom'}
-    )
+                        page_size=10,
+                        style_cell={'textAlign': 'left'}
+                        )], 
+            )],  style={'width': '48%', 'float': 'right', 'display': 'inline-block'}),   
+
+
+html.Div([
+            html.H4(id='summary-data',
+            children='There are x breweries in the united states')
+        ])
 ])
 
 @app.callback(
@@ -116,7 +114,7 @@ app.layout = html.Div(
 )
 def brewery_finder(selected_brewery):
     df = allBreweries[allBreweries['breweryName']== selected_brewery]
-    return 'Brewery location: ' + df.breweryCity + ', ' + df.breweryState
+    return  df.breweryCity + ', ' + df.breweryState
     
 
 @app.callback(
