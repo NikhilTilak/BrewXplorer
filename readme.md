@@ -1,4 +1,4 @@
-# BrewXplorer - explore more than 3750 Breweries in the United States.
+# BrewXplorer - explore more than 3475 Breweries in the United States.
 
 Love Beer like I do? Wish to checkout the nearest brewery or wonder where your favourite brew was made? Use BrewXplorer.
 Try the interactive [app](https://brewxplorer2.herokuapp.com/).
